@@ -5,24 +5,29 @@ pool:
   vmImage: 'ubuntu-latest'  # Use the latest Ubuntu image
 
 steps:
-- task: UseJavaVersion@1
-  inputs:
-    versionSpec: '11'  # Specify Java version (e.g., OpenJDK 11)
-  displayName: 'Set up JDK'
+# Manually set up Java environment using a script
+- script: |
+    sudo apt-get update
+    sudo apt-get install openjdk-11-jdk -y
+    java -version  # Check Java version
+  displayName: 'Install OpenJDK 11'
 
+# Build your project with Maven
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'  # Path to your pom.xml file
-    goals: 'clean install'  # Clean and install the application
-    options: '-DskipTests'  # Skip tests during the build (optional, can be removed if you want to run tests during the build)
+    goals: 'clean install'  # Build the project
+    options: '-DskipTests'  # Skip tests (optional)
   displayName: 'Build with Maven'
 
+# Run unit tests
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'  # Path to your pom.xml file
-    goals: 'test'  # Run the tests
+    goals: 'test'  # Run tests
   displayName: 'Run Unit Tests'
 
+# Publish test results
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'JUnit'  # Format for test results
