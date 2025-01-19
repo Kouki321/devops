@@ -1,7 +1,6 @@
-version: '3.8'
 services:
   mysql:
-    image: mysql:8.0  # You can change the version based on your needs.
+    image: mysql:8.0
     container_name: mysql-container
     environment:
       MYSQL_ROOT_PASSWORD: root_password
@@ -9,23 +8,21 @@ services:
       MYSQL_USER: kouki
       MYSQL_PASSWORD: root_password
     ports:
-      - "3306:3306"  # Expose MySQL port
+      - "3306:3306"
     networks:
       - backend
 
   spring-boot-backend:
-    build:
-      context: .  # Ensure this is the root directory of your project
-      dockerfile: Dockerfile  # Make sure your Dockerfile is correctly specified
+    image: demo
     container_name: demo
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/cafesystem1?autoReconnect=true&useSSL=false
       SPRING_DATASOURCE_USERNAME: kouki
       SPRING_DATASOURCE_PASSWORD: root_password
     ports:
-      - "8087:8086"  # Map the port of your Spring Boot app
+      - "8087:8086"
     depends_on:
-      - mysql  # Ensure MySQL starts before Spring Boot
+      - mysql
     networks:
       - backend
 
