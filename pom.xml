@@ -161,7 +161,7 @@
                                     <plugin>
                                                 <groupId>org.owasp</groupId>
                                                 <artifactId>dependency-check-maven</artifactId>
-                                                <version>6.3.1</version> <!-- Use the latest version -->
+                                                <version>6.3.1</version> <!-- Use the latest version 
                                                 <executions>
                                                     <execution>
                                                         <goals>
