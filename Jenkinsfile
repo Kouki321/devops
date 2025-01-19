@@ -55,7 +55,29 @@ pipeline {
                 }
             }
         }
+stage('SonarQube Analysis') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh 'mvn sonar:sonar -Dsonar.projectKey=my-app -Dsonar.host.url=http://your-sonarqube-server'
+                    } else {
+                        bat 'mvn sonar:sonar -Dsonar.projectKey=my-app -Dsonar.host.url=http://your-sonarqube-server'
+                    }
+                }
+            }
+        }
 
+        stage('Dependency Check') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh 'dependency-check --project my-app --out . --scan ./target'
+                    } else {
+                        bat 'dependency-check --project my-app --out . --scan ./target'
+                    }
+                }
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 script {
@@ -76,6 +98,18 @@ pipeline {
                     } else {
                         bat "trivy image ${DOCKER_IMAGE}"
                     }
+                }
+            }
+        }
+    
+        stage('Build and Deploy') {
+            steps {
+                script {
+                    // Stop and remove any running containers
+                    bat 'docker-compose down || exit 0'
+
+                    // Build and start containers
+                    bat 'docker-compose up --build -d'
                 }
             }
         }
